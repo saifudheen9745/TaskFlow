@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { catchError, take } from 'rxjs';
 import { userAuthResponse } from 'src/app/config/config.types';
 import { environment } from 'src/app/environment/environment';
-import { FormServiceService } from 'src/app/shared/services/form-service.service';
+import { FormServiceService } from 'src/app/shared/services/formService/form-service.service';
 
 @Component({
   selector: 'app-register',
