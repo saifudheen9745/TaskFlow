@@ -15,21 +15,28 @@ import { FormServiceService } from 'src/app/shared/services/formService/form-ser
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  constructor(private form: FormServiceService,private http:HttpClient,private store:Store) {}
+  constructor(
+    private form: FormServiceService,
+    private http: HttpClient,
+    private store: Store
+  ) {}
   ngOnInit(): void {
     this.loginForm = this.form.loginForm();
   }
 
-  formSubmit(form:FormGroup){
-    if(form.valid){
-      this.http.post<userAuthResponse>(`${environment.baseUrl}/login`,form.value).pipe(
-        take(1),
-        catchError((err:any)=>{
-          throw err
-        })
-      ).subscribe((data:userAuthResponse)=>{
-       this.store.dispatch(addUserDetails({newData:data}))
-      })
+  formSubmit(form: FormGroup) {
+    if (form.valid) {
+      this.http
+        .post<userAuthResponse>(`${environment.baseUrl}/login`, form.value)
+        .pipe(
+          take(1),
+          catchError((err: any) => {
+            throw err;
+          })
+        )
+        .subscribe((data: userAuthResponse) => {
+          this.store.dispatch(addUserDetails({ newData: data }));
+        });
     }
   }
 }
