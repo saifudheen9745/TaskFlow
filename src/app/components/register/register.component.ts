@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { catchError, take } from 'rxjs';
 import { userAuthResponse } from 'src/app/config/config.types';
 import { environment } from 'src/app/environment/environment';
+import { addUserDetails } from 'src/app/shared/ngrx/ngrx.actions';
+import { selectUserDetails } from 'src/app/shared/ngrx/ngrx.selectors';
 import { FormServiceService } from 'src/app/shared/services/formService/form-service.service';
 
 @Component({
@@ -13,7 +16,7 @@ import { FormServiceService } from 'src/app/shared/services/formService/form-ser
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
-  constructor(private http: HttpClient, private form: FormServiceService) {}
+  constructor(private http: HttpClient, private form: FormServiceService, private store:Store) {}
 
   ngOnInit(): void {
     this.registerForm = this.form.registerForm();
@@ -34,6 +37,7 @@ export class RegisterComponent implements OnInit {
       )
       .subscribe((data: userAuthResponse) => {
         console.log(data);
+        this.store.dispatch(addUserDetails({newData:data}))
       });
   }
 }

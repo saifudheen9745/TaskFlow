@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { catchError, take } from 'rxjs';
 import { userAuthResponse } from 'src/app/config/config.types';
 import { environment } from 'src/app/environment/environment';
+import { addUserDetails } from 'src/app/shared/ngrx/ngrx.actions';
 import { FormServiceService } from 'src/app/shared/services/formService/form-service.service';
 
 @Component({
@@ -13,7 +15,7 @@ import { FormServiceService } from 'src/app/shared/services/formService/form-ser
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  constructor(private form: FormServiceService,private http:HttpClient) {}
+  constructor(private form: FormServiceService,private http:HttpClient,private store:Store) {}
   ngOnInit(): void {
     this.loginForm = this.form.loginForm();
   }
@@ -26,8 +28,7 @@ export class LoginComponent implements OnInit {
           throw err
         })
       ).subscribe((data:userAuthResponse)=>{
-        console.log(data);
-        
+       this.store.dispatch(addUserDetails({newData:data}))
       })
     }
   }

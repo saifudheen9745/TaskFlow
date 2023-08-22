@@ -10,7 +10,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'login',
+    path: '',
     loadChildren: () =>
       import('./components/login/login.module').then(
         (m) => m.LoginModule
