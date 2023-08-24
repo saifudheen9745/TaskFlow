@@ -10,18 +10,15 @@ import {
 } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable, throwError } from 'rxjs';
-import { catchError, mergeMap, tap } from 'rxjs/operators';
-import { environment } from '../../../environment/environment'
+import { catchError, mergeMap, take, tap } from 'rxjs/operators';
+import { environment } from '../../../environment/environment';
 import { userAuthResponse } from 'src/app/config/config.types';
 import { addUserDetails } from '../../ngrx/ngrx.actions';
 import { selectUserDetails } from '../../ngrx/ngrx.selectors';
+import { ToastService } from '../toast/toast.service';
+import { Router } from '@angular/router';
 
-const excludedUrl: string[] = [
-  '',
-  '/signup'
-];
-
-
+const excludedUrl: string[] = ['', '/signup'];
 
 @Injectable({
   providedIn: 'root',
@@ -29,9 +26,20 @@ const excludedUrl: string[] = [
 export class InterceptorService implements HttpInterceptor {
   accessToken: string;
 
-  constructor(private store: Store, private http: HttpClient) {
+  constructor(
+    private store: Store,
+    private http: HttpClient,
+    private toast: ToastService,
+    private router: Router
+  ) {
     this.store
       .select(selectUserDetails)
+      .pipe(
+        take(1),
+        catchError((err) => {
+          throw err;
+        })
+      )
       .subscribe((data: userAuthResponse) => {
         this.accessToken = data.accessToken;
       });
@@ -71,16 +79,15 @@ export class InterceptorService implements HttpInterceptor {
       ),
       catchError((error: HttpErrorResponse) => {
         // Intercept the response error
+
         if (error.status === 403) {
           // Request a new token when receiving a 403 response
 
           return this.requestNewAccessToken().pipe(
             mergeMap((newToken: any) => {
-              console.log('new token received');
-              
               this.store.dispatch(
                 addUserDetails({
-                  newData:newToken
+                  newData: newToken,
                 })
               );
               // Retry the original request with the new access token
@@ -92,22 +99,24 @@ export class InterceptorService implements HttpInterceptor {
               return next.handle(retryReq);
             }),
             catchError((newTokenError) => {
-              console.error('Error refreshing access token:', newTokenError);
-              // Return the original error if token refresh fails
-              throw newTokenError
+              throw newTokenError;
             })
           );
+        } else if (error.status === 0) {
+          this.router.navigate(['/error']);
+          throw error;
         } else {
+          console.log(error.error.error);
+
+          this.toast.customErrorToast(error.error.error);
           // Pass through the error if it's not a 403 response
-           throw error
+          throw error;
         }
       })
     );
   }
 
   requestNewAccessToken(): Observable<string> {
-    console.log('requesting new token');
-    
     return this.http.get<string>(`${environment.baseUrl}/token`);
   }
 }

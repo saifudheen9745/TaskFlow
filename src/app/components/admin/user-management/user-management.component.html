@@ -1,1 +1,90 @@
-<p>user-management works!</p>
+<section
+  class="flex flex-col gap-5 justify-center items-center bg-gray-50 w-full h-screen dark:bg-gray-900"
+>
+  <p class="text-white text-xl md:text-3xl">
+    <span class="text-orange-600 text-2xl md:text-5xl">Task Flow</span>, User
+    Management
+  </p>
+  <div class="bg-gray-700 w-full h-3/4 md:w-3/4">
+    <div class="w-full h-[10%] flex border-2 border-gray-200">
+      <p
+        class="text-white flex justify-center items-center w-1/4 md:w-1/5 text-2xl font-semibold"
+      >
+        No.
+      </p>
+      <p
+        class="text-white flex justify-center items-center w-2/4 md:w-1/5 text-2xl font-semibold"
+      >
+        User
+      </p>
+      <p
+        class="text-white hidden md:flex justify-center items-center w-1/5 text-2xl font-semibold"
+      >
+        Email
+      </p>
+      <p
+        class="text-white hidden md:flex justify-center items-center w-1/5 text-2xl font-semibold"
+      >
+        Status
+      </p>
+      <p
+        class="text-white flex justify-center items-center w-1/4 md:w-1/5 text-2xl font-semibold"
+      >
+        Action
+      </p>
+    </div>
+    <div
+      *ngFor="let user of users; let i = index"
+      class="w-full h-[10%] flex bg-slate-600 mt-2"
+    >
+      <p
+        class="text-white flex justify-center text-lg items-center w-1/4 md:w-1/5"
+      >
+        {{ i + 1 }}
+      </p>
+      <p
+        [ngClass]="!user.isActive ? 'text-red-500 md:text-white' : ''"
+        class="text-white flex justify-center text-lg items-center w-2/4 md:w-1/5"
+      >
+        {{ user.name }}
+      </p>
+      <p
+        class="text-white hidden md:flex justify-center text-lg items-center w-1/5"
+      >
+        {{ user.email }}
+      </p>
+      <p
+        [ngClass]="user.isActive ? 'text-green-500' : 'text-red-900'"
+        class="text-white hidden md:flex justify-center font-semibold text-lg items-center w-1/5"
+      >
+        {{ user.isActive ? "Active" : "In-Active" }}
+      </p>
+      <div class="text-white flex justify-center items-center w-1/4 md:w-1/5">
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input
+            [checked]="user.isActive"
+            type="checkbox"
+            (change)="toggleUserStatus($event, user._id)"
+            [value]=""
+            class="sr-only peer"
+          />
+          <div
+            class="w-14 h-7 bg-gray-200 rounded-full peer dark:bg-red-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"
+          ></div>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button
+        (click)="handleLogout()"
+      class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-orange-600 to-red-700 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
+    >
+      <span
+        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+      >
+        Logout
+      </span>
+    </button>
+  </div>
+</section>

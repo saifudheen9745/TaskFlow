@@ -1,0 +1,135 @@
+<div class="bg-gray-50 flex flex-col h-screen w-full dark:bg-cyan-900">
+  <section
+    class="h-[7%] flex justify-between items-center px-5 w-full bg-cyan-800"
+  >
+    <p class="text-4xl text-gray-200 font-semibold">Task Flow</p>
+    <div class="h-full flex justify-center items-center">
+      <button
+        (click)="handleLogout()"
+        class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-orange-600 to-red-700 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
+      >
+        <span
+          class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+        >
+          Logout
+        </span>
+      </button>
+    </div>
+  </section>
+  <section
+    class="h-[93%] p-3 w-full flex flex-col gap-2 justify-center items-center"
+  >
+    <div
+      class="h-[7%] w-full md:w-4/5 flex justify-center md:justify-end items-center"
+    >
+      <button
+        (click)="handleModal(true, 'createTask')"
+        type="button"
+        class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+      >
+        Crate Task
+      </button>
+    </div>
+    <div class="h-[7%] w-full md:w-4/5">
+      <form class="flex items-center">
+        <label for="simple-search" class="sr-only">Search</label>
+        <div class="relative w-full">
+          <div
+            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+          >
+            <svg
+              class="w-4 h-4 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 18 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2"
+              />
+            </svg>
+          </div>
+          <input
+            name="search"
+            [(ngModel)]="search"
+            type="text"
+            id="simple-search"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
+            placeholder="Search task"
+            required
+          />
+        </div>
+      </form>
+    </div>
+    <div
+      class="w-full md:w-4/5 text-gray-100 rounded-xl px-2 flex items-center font-semibold text-xl h-16 bg-cyan-700 border-4 border-cyan-900 mt-2"
+    >
+      <p class="w-1/4 md:w-1/6 text-center">No</p>
+      <p class="w-3/4 md:w-2/4 text-center">Name</p>
+      <p class="hidden md:block w-2/4 text-center">Description</p>
+      <p class="hidden md:block w-1/4 text-center">Status</p>
+    </div>
+    <div
+      *ngIf="tasks"
+      class="bg-cyan-700 overflow-y-scroll px-2 rounded-xl w-full h-full md:w-4/5 md:h-4/5"
+    >
+      <div
+        (click)="handleModal(true, 'showTask', task)"
+        [ngClass]="
+          task.isComplete
+            ? 'border-green-600 md:border-cyan-900'
+            : 'border-yellow-500 md:border-cyan-900'
+        "
+        *ngFor="let task of tasks | filter:search ; let i = index "
+        class="w-full flex items-center font-semibold text-xl rounded-xl h-16 bg-gray-200 border-8 md:border-4 border-cyan-900 mt-2"
+      >
+        <p class="w-1/4 md:w-1/6 text-center text-gray-950 opacity-100">
+          {{ i + 1 }}
+        </p>
+        <p class="w-3/4 md:w-2/4 text-center text-gray-950 opacity-100">
+          {{ task.name }}
+        </p>
+        <p class="hidden md:block w-2/4 text-center text-gray-950 opacity-100">
+          {{ task.description }}
+        </p>
+        <p
+          [ngClass]="
+            task.isComplete
+              ? 'text-green-600 font-semibold'
+              : 'text-yellow-600 font-semibold'
+          "
+          class="hidden md:block w-1/4 text-center text-gray-950 opacity-100"
+        >
+          {{ task.isComplete ? "Completed" : "Pending" }}
+        </p>
+      </div>
+      
+    </div>
+    <div *ngIf="showCreateTaskModal">
+      <app-custom-modal
+        modalName="Create Task"
+        (closeModal)="handleModal($event, 'createTask')"
+        [showModal]="true"
+      >
+        <app-create-task (taskCreated)="newTask($event)"></app-create-task>
+      </app-custom-modal>
+    </div>
+    <div *ngIf="showViewTaskModal">
+      <app-custom-modal
+        modalName="View Task"
+        (closeModal)="handleModal($event, 'showTask')"
+        [showModal]="true"
+      >
+        <app-view-task
+          (taskUpdated)="updateTask($event)"
+          (taskDeleted)="deleteTask($event)"
+          [task]="selectedTask"
+        ></app-view-task>
+      </app-custom-modal>
+    </div>
+  </section>
+</div>
