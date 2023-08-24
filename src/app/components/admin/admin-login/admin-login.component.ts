@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-login',
@@ -6,6 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./admin-login.component.css'],
 })
 export class AdminLoginComponent {
+  constructor(private router:Router){}
   email:string = 'admin@gmail.com';
   password:string =  'admin';
   formEmail:string = '';
@@ -14,8 +16,8 @@ export class AdminLoginComponent {
   formSubmit(){
     if(this.formEmail === this.email && this.formPassword === this.password){
       this.formError = ''
-      console.log(this.formEmail,this.formPassword);
-      
+      localStorage.setItem('isAdminLogged','true')
+      this.router.navigate(['/admin/users'])
     }else{
       this.formError = "Invalid credentials"
     }

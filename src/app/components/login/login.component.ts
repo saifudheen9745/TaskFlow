@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { catchError, take } from 'rxjs';
 import { userAuthResponse } from 'src/app/config/config.types';
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private form: FormServiceService,
     private http: HttpClient,
-    private store: Store
+    private store: Store,
+    private router: Router
   ) {}
   ngOnInit(): void {
     this.loginForm = this.form.loginForm();
@@ -36,6 +38,7 @@ export class LoginComponent implements OnInit {
         )
         .subscribe((data: userAuthResponse) => {
           this.store.dispatch(addUserDetails({ newData: data }));
+          this.router.navigate(['/home'])
         });
     }
   }
