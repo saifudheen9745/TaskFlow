@@ -8,8 +8,8 @@ export class FilterPipe implements PipeTransform {
 
   transform(value: task[], key?:string): task[] {
     if(key){
+      const nameRegex = new RegExp(key.toLowerCase())
 
-      const nameRegex = new RegExp(key)
       return value.filter((task)=>nameRegex.test(task.name.toLowerCase()))
     }else{
       return value
