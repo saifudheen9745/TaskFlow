@@ -18,8 +18,13 @@ const routes: Routes = [{ path: '', component: TasksComponent }];
     CreateTaskComponent,
     PatternValidationDirective,
     ViewTaskComponent,
-    FilterPipe
+    FilterPipe,
   ],
-  imports: [CommonModule, RouterModule.forChild(routes), FormsModule],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    FormsModule,
+   
+  ],
 })
 export class TasksModule {}

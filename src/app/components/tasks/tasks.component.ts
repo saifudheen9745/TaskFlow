@@ -6,11 +6,13 @@ import { selectUserDetails } from 'src/app/shared/ngrx/ngrx.selectors';
 import { catchError, take } from 'rxjs';
 import { removeUserDetails } from 'src/app/shared/ngrx/ngrx.actions';
 import { Router } from '@angular/router';
+import { listAnimation } from './animations';
 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css'],
+  animations:[listAnimation]
 })
 export class TasksComponent implements OnInit {
   showCreateTaskModal: boolean = false;
